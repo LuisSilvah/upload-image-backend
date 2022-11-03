@@ -4,8 +4,7 @@ const crypto = require("crypto");
 const aws = require("aws-sdk");
 const multerS3 = require("multer-s3");
 
-const nameBucket = 'winkeupload';
-
+const nameBucket = process.env.AWS_BUCKET_NAME;
 
 const storageTypes = {
     local: multer.diskStorage({
@@ -41,7 +40,7 @@ const storageTypes = {
 
 module.exports = {
     dest: path.resolve(__dirname, "..", "..", "tmp", "uploads"),
-    storage: storageTypes['local'],
+    storage: storageTypes[process.env.STORAGE_TYPE],
     limits: {
         fileSize: 2 * 1024 * 1024
     },
