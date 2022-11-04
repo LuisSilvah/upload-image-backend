@@ -4,7 +4,13 @@ const fs = require('fs')
 const path = require('path')
 const { promisify } = require('util')
 
-const s3 = new aws.S3()
+const s3 = new aws.S3({
+  region: process.env.DEFAULT_REGION_S3,
+  credentials: {
+    accessKeyId: process.env.ACCESS_KEY_ID,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+  },
+})
 
 const PostSchema = new mongoose.Schema({
   name: String,
@@ -27,7 +33,7 @@ PostSchema.pre('remove', function () {
   if (process.env.STORAGE_TYPE === 's3') {
     return s3
       .deleteObject({
-        Bucket: process.env.AWS_BUCKET_NAME,
+        Bucket: process.env.AWS_BUCKET_NAME_S3,
         Key: this.key,
       })
       .promise()

@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const aws = require("aws-sdk");
 const multerS3 = require("multer-s3");
 
-const nameBucket = process.env.AWS_BUCKET_NAME;
+const nameBucket = process.env.AWS_BUCKET_NAME_S3;
 
 const storageTypes = {
     local: multer.diskStorage({
@@ -22,7 +22,13 @@ const storageTypes = {
         }
     }),
     s3: multerS3({
-        s3: new aws.S3(),
+        s3: new aws.S3({
+            region: process.env.DEFAULT_REGION_S3,
+            credentials: {
+              accessKeyId: process.env.ACCESS_KEY_ID,
+              secretAccessKey: process.env.SECRET_ACCESS_KEY,
+            },
+          }),
         bucket: nameBucket,
         contentType: multerS3.AUTO_CONTENT_TYPE,
         acl: "public-read",
